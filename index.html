@@ -164,6 +164,7 @@ button{color:inherit}
 .project-card:nth-child(5){grid-column:span 6;grid-row:span 8}
 .project-card:nth-child(6){grid-column:span 6;grid-row:span 8}
 .project-card:nth-child(7){grid-column:span 12;grid-row:span 8}
+.project-card:nth-child(8){grid-column:span 12;grid-row:span 8}
 .project-card.hidden{display:none}
 .project-card img{transition:transform .9s cubic-bezier(.2,.7,.2,1),filter .35s;filter:saturate(.72)}
 .project-card:hover img{transform:scale(1.035);filter:saturate(.95)}
@@ -471,6 +472,10 @@ textarea{resize:vertical;min-height:110px}
         <img loading="lazy" src="/assets/master-bedroom-ampang-01.jpg" alt="Master Bedroom interior in Ampang">
         <div class="project-info"><div><h3>Master Bedroom</h3><p>Residential Interior · Ampang</p></div><span class="project-open">↗</span></div>
       </article>
+      <article class="project-card reveal" tabindex="0" data-category="residential" data-title="Tuan 2egacy Residency" data-location="Kuala Lumpur" data-type="Residential Interior" data-year="" data-image="/assets/tuan-01.png" data-images="/assets/tuan-01.png|/assets/tuan-02.png|/assets/tuan-03.png|/assets/tuan-04.png|/assets/tuan-05.png">
+        <img loading="lazy" src="/assets/tuan-01.png" alt="Tuan 2egacy Residency interior">
+        <div class="project-info"><div><h3>Tuan 2egacy Residency</h3><p>Residential Interior · Kuala Lumpur</p></div><span class="project-open">↗</span></div>
+      </article>
 </div>
   </div>
 </section>
@@ -684,7 +689,7 @@ function openProject(card){
   modalImages=(card.dataset.images?card.dataset.images.split('|'):[card.dataset.image]).filter(Boolean);
   modalImageIndex=0; setModalImage(0);
   modalTitle.textContent=card.dataset.title;
-  modalMeta.textContent=`${card.dataset.type} · ${card.dataset.location} · ${card.dataset.year}`;
+  modalMeta.textContent=[card.dataset.type,card.dataset.location,card.dataset.year].filter(Boolean).join(' · ');
   modalDesc.textContent=card.dataset.description || 'A selected Kerangka project. Use this project view for a concise story, design approach, scope, material palette and additional project images when your final project content is ready.';
   modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
 }
