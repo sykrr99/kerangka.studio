@@ -246,7 +246,13 @@ textarea{resize:vertical;min-height:110px}
 .modal.open{opacity:1;pointer-events:auto}
 .modal-card{width:min(1060px,96vw);height:min(720px,90vh);display:grid;grid-template-columns:1.1fr .9fr;background:var(--paper-2);transform:translateY(18px) scale(.985);transition:.35s;overflow:hidden}
 .modal.open .modal-card{transform:none}
-.modal-image{min-height:0}
+.modal-image{min-height:0;position:relative;overflow:hidden}
+.modal-image img{transition:opacity .2s ease}
+.modal-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid rgba(248,244,236,.58);background:rgba(59,57,53,.42);color:#f6f1e8;display:grid;place-items:center;font-size:27px;line-height:1;cursor:pointer;backdrop-filter:blur(8px);transition:.2s;z-index:2}
+.modal-nav:hover{background:rgba(59,57,53,.68)}
+.modal-prev{left:18px}.modal-next{right:18px}
+.modal-count{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:rgba(59,57,53,.5);color:#f6f1e8;border:1px solid rgba(248,244,236,.35);border-radius:999px;padding:6px 10px;font-size:11px;letter-spacing:.08em;backdrop-filter:blur(8px);z-index:2}
+.modal-nav[hidden],.modal-count[hidden]{display:none}
 .modal-content{padding:54px;position:relative;display:flex;flex-direction:column}
 .modal-close{position:absolute;right:20px;top:18px;width:42px;height:42px;border-radius:50%;background:transparent;border:1px solid var(--line);font-size:22px;cursor:pointer}
 .modal-content h2{font-family:"Manrope";font-size:50px;line-height:1;letter-spacing:-.05em;font-weight:500;margin:62px 0 14px}
@@ -457,7 +463,7 @@ textarea{resize:vertical;min-height:110px}
         <img loading="lazy" src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=86" alt="Monument Retail">
         <div class="project-info"><div><h3>Monument Retail</h3><p>Retail Interior · Petaling Jaya</p></div><span class="project-open">↗</span></div>
       </article>
-      <article class="project-card reveal" tabindex="0" data-category="residential" data-title="Myra, Nilai" data-location="Nilai" data-type="3D Drawing" data-year="2026" data-image="/assets/myra-nilai-01.png">
+      <article class="project-card reveal" tabindex="0" data-category="residential" data-title="Myra, Nilai" data-location="Nilai" data-type="3D Drawing" data-year="2026" data-image="/assets/myra-nilai-01.png" data-images="/assets/myra-nilai-01.png|/assets/myra-nilai-02.png|/assets/myra-nilai-03.png">
         <img loading="lazy" src="/assets/myra-nilai-01.png" alt="Myra, Nilai 3D Drawing">
         <div class="project-info"><div><h3>Myra, Nilai</h3><p>3D Drawing · 2026</p></div><span class="project-open">↗</span></div>
       </article>
@@ -585,7 +591,12 @@ textarea{resize:vertical;min-height:110px}
 
 <div class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Project details">
   <div class="modal-card">
-    <div class="modal-image"><img src="" alt=""></div>
+    <div class="modal-image">
+      <img src="" alt="">
+      <button class="modal-nav modal-prev" type="button" aria-label="Previous image" hidden>‹</button>
+      <button class="modal-nav modal-next" type="button" aria-label="Next image" hidden>›</button>
+      <div class="modal-count" aria-live="polite" hidden></div>
+    </div>
     <div class="modal-content">
       <button class="modal-close" aria-label="Close project">×</button>
       <div class="modal-meta"></div>
@@ -657,9 +668,21 @@ qsa('.service button').forEach(btn=>btn.addEventListener('click',()=>{
 }));
 
 // project modal
-const modal=qs('.modal'), modalImg=qs('.modal-image img',modal), modalTitle=qs('.modal-content h2',modal), modalMeta=qs('.modal-meta',modal), modalDesc=qs('.modal-content p',modal);
+const modal=qs('.modal'), modalImageWrap=qs('.modal-image',modal), modalImg=qs('.modal-image img',modal), modalTitle=qs('.modal-content h2',modal), modalMeta=qs('.modal-meta',modal), modalDesc=qs('.modal-content p',modal), modalPrev=qs('.modal-prev',modal), modalNext=qs('.modal-next',modal), modalCount=qs('.modal-count',modal);
+let modalImages=[], modalImageIndex=0, modalProjectTitle='';
+function setModalImage(index){
+  if(!modalImages.length)return;
+  modalImageIndex=(index+modalImages.length)%modalImages.length;
+  modalImg.src=modalImages[modalImageIndex];
+  modalImg.alt=`${modalProjectTitle} image ${modalImageIndex+1}`;
+  const multiple=modalImages.length>1;
+  modalPrev.hidden=!multiple; modalNext.hidden=!multiple; modalCount.hidden=!multiple;
+  if(multiple) modalCount.textContent=`${modalImageIndex+1} / ${modalImages.length}`;
+}
 function openProject(card){
-  modalImg.src=card.dataset.image; modalImg.alt=card.dataset.title;
+  modalProjectTitle=card.dataset.title;
+  modalImages=(card.dataset.images?card.dataset.images.split('|'):[card.dataset.image]).filter(Boolean);
+  modalImageIndex=0; setModalImage(0);
   modalTitle.textContent=card.dataset.title;
   modalMeta.textContent=`${card.dataset.type} · ${card.dataset.location} · ${card.dataset.year}`;
   modalDesc.textContent=card.dataset.description || 'A selected Kerangka project. Use this project view for a concise story, design approach, scope, material palette and additional project images when your final project content is ready.';
@@ -668,13 +691,27 @@ function openProject(card){
 function closeProject(){
   modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow='';
 }
+function nextModalImage(){if(modalImages.length>1)setModalImage(modalImageIndex+1)}
+function prevModalImage(){if(modalImages.length>1)setModalImage(modalImageIndex-1)}
 qsa('.project-card').forEach(card=>{
   card.addEventListener('click',()=>openProject(card));
   card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openProject(card)}});
 });
+modalPrev.addEventListener('click',e=>{e.stopPropagation();prevModalImage()});
+modalNext.addEventListener('click',e=>{e.stopPropagation();nextModalImage()});
+let touchStartX=0;
+modalImageWrap.addEventListener('touchstart',e=>{touchStartX=e.changedTouches[0].clientX},{passive:true});
+modalImageWrap.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-touchStartX;
+  if(Math.abs(dx)>45){dx<0?nextModalImage():prevModalImage()}
+},{passive:true});
 qs('.modal-close').addEventListener('click',closeProject);
 modal.addEventListener('click',e=>{if(e.target===modal)closeProject()});
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeProject();closeMenu()}});
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeProject();closeMenu()}
+  if(modal.classList.contains('open')&&e.key==='ArrowRight')nextModalImage();
+  if(modal.classList.contains('open')&&e.key==='ArrowLeft')prevModalImage();
+});
 
 // very subtle hero parallax
 const parallax=qs('[data-parallax]');
