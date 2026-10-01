@@ -134,6 +134,60 @@ main{display:flex;flex-direction:column}
 .project-card:hover .project-open{background:var(--cream);color:var(--brown);transform:rotate(45deg)}
 .project-card.hidden{display:none}
 
+
+/* PROJECT CARD REFINEMENT — proportional titles + faded title panel */
+.project-card,.project-card:nth-child(n){
+  padding-bottom:88px;
+}
+.project-info{
+  left:0;right:0;bottom:0;min-height:88px;
+  padding:24px 14px 12px;
+  align-items:flex-end;
+  gap:12px;
+  background:linear-gradient(
+    to bottom,
+    rgba(45,32,24,0) 0%,
+    rgba(45,32,24,.62) 24%,
+    rgba(45,32,24,.92) 58%,
+    #2d2018 100%
+  );
+}
+.project-info>div{
+  flex:1;
+  min-width:0;
+}
+.project-info h3{
+  font-size:clamp(20px,1.75vw,25px);
+  line-height:1.02;
+  letter-spacing:-.018em;
+  margin:0 0 5px;
+  max-width:100%;
+  overflow-wrap:anywhere;
+  text-wrap:balance;
+}
+.project-info p{
+  font-size:8px;
+  line-height:1.35;
+  letter-spacing:.07em;
+  white-space:normal;
+}
+.project-open{
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  margin-bottom:2px;
+}
+@media(max-width:1100px) and (min-width:721px){
+  .project-info h3{font-size:21px}
+  .project-info{padding-left:12px;padding-right:12px}
+}
+@media(max-width:720px){
+  .project-card,.project-card:nth-child(n){padding-bottom:92px}
+  .project-info{min-height:92px;padding:28px 14px 13px}
+  .project-info h3{font-size:27px;overflow-wrap:normal}
+  .project-info p{font-size:8px}
+}
+
 /* ABOUT / STUDIO — text left, image right */
 .studio{background:linear-gradient(90deg,#4a3428,#6a4d3b);color:var(--cream);padding:0}
 .studio .container{width:100%;max-width:none}
