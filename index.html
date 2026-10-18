@@ -284,6 +284,13 @@ textarea{resize:vertical;min-height:100px}
 .form-note{font-size:9px;color:#76665b;line-height:1.5;max-width:220px;margin:0}
 .contact-form .btn-dark{background:var(--brown);color:var(--cream);border-color:var(--brown)}
 
+.contact-location{margin-top:46px;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:28px;align-items:center;padding:24px;border:1px solid rgba(244,239,231,.24);border-radius:16px;background:rgba(42,27,19,.35)}
+.contact-location h3{font-family:"Cormorant Garamond",serif;font-size:clamp(27px,3vw,38px);font-weight:500;line-height:1.1;margin:10px 0 16px}
+.contact-location address{font-style:normal;font-size:13px;line-height:1.8;color:var(--cream)}
+.contact-location .directions-link{display:inline-block;margin-top:18px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid rgba(244,239,231,.5);padding-bottom:5px}
+.contact-map{width:100%;height:280px;display:block;border:0;border-radius:10px;background:#e9e1d7}
+@media(max-width:700px){.contact-location{grid-template-columns:1fr;padding:18px;gap:22px}.contact-map{height:260px}}
+
 /* FOOTER */
 .footer{background:#50382b;color:var(--cream);padding:24px 0;border-top:1px solid var(--line)}
 .footer-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:28px}
@@ -588,6 +595,17 @@ textarea{resize:vertical;min-height:100px}
         <p class="form-note">This opens your email app with the project details filled in, so no backend is required.</p>
       </div>
     </form>
+  </div>
+  <div class="container">
+    <div class="contact-location reveal">
+      <div class="contact-location-copy">
+        <p class="kicker">Find us</p>
+        <h3>Visit Kerangka Studio</h3>
+        <address>No. 1, Jalan P2/8, Seksyen 2,<br>Bandar Teknologi Kajang,<br>43500 Semenyih, Selangor, Malaysia.</address>
+        <a class="directions-link" href="https://www.google.com/maps?q=No.%201%2C%20Jalan%20P2%2F8%2C%20Seksyen%202%2C%20Bandar%20Teknologi%20Kajang%2C%2043500%20Semenyih%2C%20Selangor%2C%20Malaysia" target="_blank" rel="noopener noreferrer" aria-label="Open Kerangka Studio address in Google Maps">Get directions ↗</a>
+      </div>
+      <iframe class="contact-map" title="Map to Kerangka Studio, Bandar Teknologi Kajang" src="https://maps.google.com/maps?q=No.%201%2C%20Jalan%20P2%2F8%2C%20Seksyen%202%2C%20Bandar%20Teknologi%20Kajang%2C%2043500%20Semenyih%2C%20Selangor%2C%20Malaysia&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    </div>
   </div>
 </section>
 </main>
