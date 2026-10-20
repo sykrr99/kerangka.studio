@@ -764,6 +764,18 @@ if(parallax && matchMedia('(pointer:fine)').matches){
   });
 }
 
+// Record clicks to WhatsApp as a secondary Google Ads contact event.
+// A click does not confirm that the visitor sent a WhatsApp message.
+document.querySelectorAll('a[href^="https://wa.me/"]').forEach(link => {
+  link.addEventListener('click', () => {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'conversion', {
+        send_to: 'AW-18520539926/HQ2KCNbF7qIdEJaGpP9E'
+      });
+    }
+  });
+});
+
 // mailto enquiry
 qs('#enquiry-form').addEventListener('submit',e=>{
   e.preventDefault();
