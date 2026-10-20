@@ -1,0 +1,40 @@
+name: Generate Kerangka social cover
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/generate-social-cover.yml'
+permissions:
+  contents: write
+jobs:
+  cover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pip install pillow
+      - name: Render cream logo card
+        run: |
+          python - <<'PY'
+          from PIL import Image, ImageOps, ImageDraw, ImageFont
+          from pathlib import Path
+          canvas = Image.new('RGB', (1200,630), '#F5EFE7')
+          logo = Image.open('logo.png').convert('RGBA')
+          logo.thumbnail((760,360), Image.Resampling.LANCZOS)
+          alpha = logo.getchannel('A')
+          colored = Image.new('RGBA', logo.size, '#543A2D')
+          colored.putalpha(alpha)
+          canvas.paste(colored, ((1200-logo.width)//2, (630-logo.height)//2-35), colored)
+          fontpath='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+          font = ImageFont.truetype(fontpath, 23)
+          caption='INTERIOR DESIGN  &  CUSTOM CARPENTRY'
+          draw=ImageDraw.Draw(canvas)
+          bb=draw.textbbox((0,0),caption,font=font)
+          draw.text(((1200-(bb[2]-bb[0]))/2,512),caption,font=font,fill='#6D4F3D')
+          canvas.save('og-cover.jpg',quality=93,subsampling=0)
+          PY
+      - name: Commit cover
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add og-cover.jpg
+          git diff --cached --quiet || (git commit -m "Generate branded cream social preview" && git push)
